@@ -1,0 +1,58 @@
+#!/usr/bin/env python
+#
+# File        : wscript
+# Description : Waf build script.
+# Copyright   : Copyright (c) 2016 Mirror Labs Inc. All rights reserved.
+# Maintainer  : Enzo Haussecker <enzo@mirror.co>
+# Stability   : Stable
+# Portability : Portable
+#
+# NOTICE: Permission is hereby granted, free of charge, to any person obtaining
+# a copy of this software and associated documentation files (the "Software"),
+# to deal in the Software without restriction, including without limitation the
+# rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
+# sell copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+#
+# This script builds and tests all Rust libraries and executables.
+##
+
+import os
+
+from waflib import Build
+
+top = ".."
+out = "%s/build" % top
+
+def configure(ctx):
+    # Find Cargo package manager.
+    ctx.find_program("cargo", var = "CARGO")
+    # Set environment variables.
+    os.environ["CARGO_TARGET_DIR"] = "%s/rust" % out
+
+def build(ctx):
+    # Build project.
+    ctx(rule   = "${CARGO} build --manifest-path ${SRC}",
+        source = "Cargo.toml")
+
+def test(ctx):
+    # Create build context.
+    bld = Build.BuildContext()
+    bld.init_dirs()
+    bld.env = ctx.env
+    # Register unit tests.
+    ctx(rule   = "${CARGO} test --manifest-path ${SRC}",
+        source = "Cargo.toml").post()
+    # Run unit tests.
+    bld.compile()
