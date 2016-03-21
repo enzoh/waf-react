@@ -38,8 +38,8 @@ from waflib                     import Build, Logs
 from watchdog.observers.polling import PollingObserver as Observer
 from watchdog.events            import FileSystemEventHandler
 
-class RunContext(Build.InstallContext):
-    cmd = fun = "run"
+class StartContext(Build.InstallContext):
+    cmd = fun = "start"
 
 class TestContext(Build.InstallContext):
     cmd = fun = "test"
@@ -47,8 +47,8 @@ class TestContext(Build.InstallContext):
 class WatchContext(Build.InstallContext):
     cmd = fun = "watch"
 
-class KillContext(Build.InstallContext):
-    cmd = fun = "kill"
+class StopContext(Build.InstallContext):
+    cmd = fun = "stop"
 
 class ChangeHandler(FileSystemEventHandler):
     def on_any_event(self, event):
@@ -88,8 +88,8 @@ def sh(ctx, script):
         rule = "${SH} %s/sh/%s" % (workspace, script)).post()
     bld.compile()
 
-def run(ctx):
-    sh(ctx, "run.sh")
+def start(ctx):
+    sh(ctx, "start.sh")
 
 def test(ctx):
     ctx.recurse(children)
@@ -108,5 +108,5 @@ def watch(ctx):
     signal.pause()
     observer.join()
 
-def kill(ctx):
-    sh(ctx, "kill.sh")
+def stop(ctx):
+    sh(ctx, "stop.sh")
