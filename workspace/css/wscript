@@ -44,9 +44,13 @@ def configure(ctx):
 def build(ctx):
     for source in sources:
         name, _ = os.path.splitext(source)
-        # Compile and minify source file.
-        ctx(rule   = "${LESS} ${SRC} | ${YUI} --type css -o ${TGT}",
+        # Compile source file.
+        ctx(rule   = "${LESS} ${SRC} ${TGT}",
             source = source,
+            target = "%s-compiled.css" % name)
+        # Minify source file.
+        ctx(rule   = "${YUI} ${SRC} -o ${TGT}",
+            source = "%s-compiled.css" % name,
             target = "%s.min.css" % name)
         # Install source file.
         ctx.install_files("/tmp/assets/css", "%s.min.css" % name)

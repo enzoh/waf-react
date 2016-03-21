@@ -48,9 +48,13 @@ def configure(ctx):
 def build(ctx):
     for source in sources:
         name, _ = os.path.splitext(source)
-        # Compile and minify source file.
-        ctx(rule   = "${BABEL} ${PLUGINS} ${SRC} | ${YUI} --type js -o ${TGT}",
+        # Compile source file.
+        ctx(rule   = "${BABEL} ${PLUGINS} ${SRC} -o ${TGT}",
             source = source,
+            target = "%s-compiled.js" % name)
+        # Minify source file.
+        ctx(rule   = "${YUI} ${SRC} -o ${TGT}",
+            source = "%s-compiled.js" % name,
             target = "%s.min.js" % name)
         # Install source.
         ctx.install_files("/tmp/assets/js", "%s.min.js" % name)
