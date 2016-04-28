@@ -28,6 +28,9 @@
 # This script provides provisioning for the Vagrant development environment.
 ##
 
+# Update package manager.
+apt-get update
+
 # Install Python development tools.
 apt-get install -y libyaml-dev python-dev python-pip
 pip install watchdog
