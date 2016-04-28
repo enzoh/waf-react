@@ -4,6 +4,6 @@ version    = "0.1.0"
 authors    = ["Enzo Haussecker <enzo@mirror.co>"]
 
 [dependencies]
-iron       = "0.2"
-mount      = "0.0"
-staticfile = "0.1"
+iron       = "0.3"
+mount      = "0.1"
+staticfile = "0.2"
